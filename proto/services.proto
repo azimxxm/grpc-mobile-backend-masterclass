@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package masterclass.v1;
+
+option go_package = "github.com/azimxxm/grpc-mobile-backend-masterclass/gen/go/masterclass/v1;masterclassv1";
+
+// ============================================================================
+// 1. Unary RPC: Auth & User Profile Service
+// ============================================================================
+service AuthService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc GetProfile(GetProfileRequest) returns (UserProfile);
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+  string device_model = 3;
+}
+
+message LoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  int64 expires_in = 3;
+}
+
+message GetProfileRequest {
+  string user_id = 1;
+}
+
+message UserProfile {
+  string user_id = 1;
+  string full_name = 2;
+  string email = 3;
+  string avatar_url = 4;
+  bool is_verified = 5;
+  int64 created_at = 6;
+}
+
+// ============================================================================
+// 2. Server-Streaming RPC: Live Chat & Feed Service
+// ============================================================================
+service ChatService {
+  rpc SubscribeChannel(ChannelSubscriptionRequest) returns (stream ChatMessage);
+}
+
+message ChannelSubscriptionRequest {
+  string channel_id = 1;
+  int64 last_message_id = 2;
+}
+
+message ChatMessage {
+  int64 message_id = 1;
+  string channel_id = 2;
+  string sender_name = 3;
+  string text = 4;
+  int64 timestamp = 5;
+  bool is_pinned = 6;
+}
+
+// ============================================================================
+// 3. Bi-directional Streaming RPC: Real-Time Geotracking (Uber Radar)
+// ============================================================================
+service TrackingService {
+  rpc LiveLocationStream(stream ClientLocationUpdate) returns (stream NearbyDriversRadar);
+}
+
+message ClientLocationUpdate {
+  string client_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  float bearing = 4;
+  int64 timestamp = 5;
+}
+
+message DriverInfo {
+  string driver_id = 1;
+  string vehicle_type = 2;
+  double latitude = 3;
+  double longitude = 4;
+  float heading = 5;
+  int32 eta_seconds = 6;
+}
+
+message NearbyDriversRadar {
+  repeated DriverInfo drivers = 1;
+  int64 server_time = 2;
+}
+
+// ============================================================================
+// 4. Client-Streaming RPC: High-Throughput Telemetry & Analytics
+// ============================================================================
+service TelemetryService {
+  rpc UploadBatchMetrics(stream MetricEvent) returns (UploadSummary);
+}
+
+message MetricEvent {
+  string event_id = 1;
+  string event_name = 2; // e.g. "ad_impression", "screen_view", "crash"
+  int64 timestamp_ms = 3;
+  map<string, string> properties = 4;
+  int32 network_type = 5; // 0=WiFi, 1=Cellular
+}
+
+message UploadSummary {
+  int32 events_processed = 1;
+  bool success = 2;
+  int64 server_processing_time_ms = 3;
+}
+
+// ============================================================================
+// 5. High-Security Fintech Transaction Service (mTLS & Interceptors)
+// ============================================================================
+service BankingService {
+  rpc TransferFunds(TransferRequest) returns (TransferReceipt);
+}
+
+message TransferRequest {
+  string idempotency_key = 1;
+  string from_account = 2;
+  string to_account = 3;
+  double amount = 4;
+  string currency = 5;
+  string device_attestation_nonce = 6;
+}
+
+message TransferReceipt {
+  string transaction_id = 1;
+  string status = 2; // "COMPLETED", "PENDING", "REJECTED"
+  double fee = 3;
+  int64 timestamp = 4;
+}
