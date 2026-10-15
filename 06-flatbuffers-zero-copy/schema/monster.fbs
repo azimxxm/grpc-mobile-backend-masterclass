@@ -1,0 +1,22 @@
+// 06-flatbuffers-zero-copy/schema/monster.fbs
+namespace GameData;
+
+enum Element:byte { Neutral = 0, Fire = 1, Ice = 2, Lightning = 3 }
+
+struct Vec3 {
+  x:float;
+  y:float;
+  z:float;
+}
+
+table Entity {
+  id:ulong;
+  name:string;
+  pos:Vec3;
+  hp:short;
+  mana:short;
+  element:Element = Neutral;
+  inventory:[ubyte];
+}
+
+root_type Entity;

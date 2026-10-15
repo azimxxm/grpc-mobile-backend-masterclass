@@ -1,35 +1,25 @@
-# gRPC vs REST Masterclass: Mobile (iOS Swift) & Backend (Go)
+# gRPC & High-Performance System Design Masterclass: iOS (Swift 6) & Go
 
-> **Eng yuqori tezlik, minimal batareya sarfi va bank darajasidagi xavfsizlikka mo'ljallangan 5 ta real loyiha va benchmarklar to'plami.**
+> **Eng yuqori tezlik, minimal batareya sarfi, Zero-Copy xotira va bank darajasidagi xavfsizlikka mo'ljallangan 8 ta real loyiha va benchmarklar to'plami.**
 
-Ushbu repozitoriy [azimjondev.uz](https://azimjondev.uz/lessons) saytidagi **"gRPC & High-Performance System Design"** flagman kursi uchun rasmiy amaliy kodlar bazasidir.
-
----
-
-## 🎯 Kurs Maqsadi: Nega Senior Dasturchilar gRPC ga O'tadi? (The AHA! Moment)
-
-Oddiy REST API da matnli JSON, ulanishning sekinligi va run-time dagi tiqilishlar sababli yirik ilovalar (Telegram, Uber, Netflix) azob chekadi. gRPC quyidagi 5 ta fundamental ustun orqali bu muammolarni ildizi bilan yo'q qiladi:
-
-1. **Protobuf Binary Serialization:** Matnli JSON o'rniga 10 barobar tezroq va 70% kichik ikkilik format.
-2. **HTTP/2 & HTTP/3 Multiplexing:** Bitta tunnel ustida yuzlab parallel so'rovlar (TCP handshake keraksiz).
-3. **Type-Safety & Single Source of Truth:** `.proto` fayl yagona qonun — Swift va Go o'rtasida API nomuvofiqligi 100% yo'qoladi.
-4. **4 xil Aloqa Oqimi:** Unary, Server-Streaming, Client-Streaming, Bi-directional Streaming.
-5. **Bank Darajasidagi Xavfsizlik:** mTLS (Mutual TLS), Apple Secure Enclave, SPKI Certificate Pinning va Interceptors.
+Ushbu repozitoriy [azimjondev.uz](https://azimjondev.uz/lessons) saytidagi **"gRPC & High-Performance System Design"** flagman masterclass kursi uchun rasmiy amaliy kodlar bazasidir.
 
 ---
 
-## 📊 Katta Benchmark: JSON vs Protobuf vs FlatBuffers
+## 📚 8 Ta Flagman Darslik (azimjondev.uz)
 
-| Ko'rsatkich | JSON (REST) | Protobuf (gRPC) | FlatBuffers (Zero-Copy) |
-| :--- | :--- | :--- | :--- |
-| **Deserializatsiya (Decoding)** | ~120 - 250 ms *(Sekin)* | ~15 - 25 ms *(Tez)* | **~0.02 ms** ⚡ *(Bir zumda)* |
-| **Qo'shimcha RAM Allokatsiyasi** | Juda katta (Obyektlar daraxti) | O'rtacha | **0 bayt** (In-place pointer) |
-| **Paket Hajmi (Wire Size)** | 1.2 MB (100%) | 250 KB (20%) | 320 KB (25%) |
-| **CPU va Batareya Sarfi** | Yuqori (Telefon qiziydi) | Minimal | Eng past |
+1. **`01_the_cost_of_json.md`**: Nega JSON yirik loyihalarda o'ladi? String parsing, Heap allocations va benchmarklar.
+2. **`02_protobuf_and_grpc.md`**: Protobuf v3 + gRPC to'liq qo'llanma (Swift + Go). Varint, Field tags va HTTP/2 multiplexing.
+3. **`03_flatbuffers_zero_copy.md`**: FlatBuffers: 0 ms parslash va xotira mo'jizasi (Zero-Copy VTable pointers).
+4. **`04_telegram_mtproto_tl.md`**: Telegram TL va MTProto qanday ishlaydi? Nikolay Durov algoritmlari va In-Memory engine.
+5. **`05_http3_quic_transport.md`**: UDP asosidagi HTTP/3: Head-of-Line blocking barhami va Connection Migration.
+6. **`06_mobile_security_mtls_pinning.md`**: mTLS, Certificate Pinning, Apple Secure Enclave va Dynamic HMAC.
+7. **`07_offline_first_caching.md`**: SQLite WAL, Ring Buffer va Batch Sync Engine.
+8. **`08_real_world_projects_showcase.md`**: 8 ta to'liq demo loyiha kodlari va masterclass xulosasi.
 
 ---
 
-## 🏗 5 Ta Real-World Demo Loyihalar
+## 🏗 8 Ta Real-World Demo Loyihalar (Kodlar Bazasi)
 
 Har bir papkada to'liq ishlovchi **iOS Swift 6 Client** va **Go Backend** kodlari mavjud:
 
@@ -54,9 +44,35 @@ Har bir papkada to'liq ishlovchi **iOS Swift 6 Client** va **Go Backend** kodlar
 - **Yutuq:** Xotirani to'ldirmasdan voqealar birma-bir oqiziladi, server yakuniy hisobotni qaytaradi.
 
 ### 📁 [`05-fintech-mtls-interceptors/`](05-fintech-mtls-interceptors/)
-- **Mavzu:** Bank o'tkazmalari va to'lov tizimlari xavfsizligi.
+- **Mavzu:** Bank o'tkazmalari va to'lov tizimlari xavfsizligi (Payme / Click / Bank).
 - **Taqqoslash:** Qo'lda yozilgan URLSession headerlari vs `mTLS + Client/Server Interceptors`.
 - **Yutuq:** Idempotency tekshiruvi, Dynamic Nonce, replay-attack dan to'liq himoyalangan avtomatlashtirilgan middleware.
+
+### 📁 [`06-flatbuffers-zero-copy/`](06-flatbuffers-zero-copy/)
+- **Mavzu:** O'yinlar va 3D grafika uchun Google FlatBuffers Zero-Copy Reader.
+- **Taqqoslash:** Protobuf Deserialization (18 ms) vs FlatBuffers Direct ByteBuffer Pointer (**0.02 ms**).
+- **Yutuq:** 0 bayt yangi RAM allokatsiyasi, instant O(1) field lookup.
+
+### 📁 [`07-http3-quic-transport/`](07-http3-quic-transport/)
+- **Mavzu:** UDP ustidagi HTTP/3 QUIC va Mobil Connection Migration.
+- **Taqqoslash:** TCP Connection Reset on Wi-Fi/LTE drop vs QUIC Seamless CID Migration.
+- **Yutuq:** `Network.framework` handover orqali 0-sekundlik uzilishsiz ma'lumot oqimi.
+
+### 📁 [`08-offline-sqlite-wal-sync/`](08-offline-sqlite-wal-sync/)
+- **Mavzu:** Offline-First SQLite WAL rejimi va High-Throughput Batch Ingestion.
+- **Taqqoslash:** Har bir event uchun alohida HTTP so'rov vs Local WAL Buffer + Single Transaction Ingest.
+- **Yutuq:** Readers never block Writers (`PRAGMA journal_mode=WAL`), batareya tejamkorligi.
+
+---
+
+## 📊 Katta Benchmark: JSON vs Protobuf vs FlatBuffers
+
+| Ko'rsatkich | JSON (REST) | Protobuf (gRPC) | FlatBuffers (Zero-Copy) |
+| :--- | :--- | :--- | :--- |
+| **Deserializatsiya (Decoding)** | ~120 - 250 ms *(Sekin)* | ~15 - 25 ms *(Tez)* | **~0.02 ms** ⚡ *(Bir zumda)* |
+| **Qo'shimcha RAM Allokatsiyasi** | Juda katta (Obyektlar daraxti) | O'rtacha | **0 bayt** (In-place pointer) |
+| **Paket Hajmi (Wire Size)** | 1.2 MB (100%) | 250 KB (20%) | 320 KB (25%) |
+| **CPU va Batareya Sarfi** | Yuqori (Telefon qiziydi) | Minimal | Eng past |
 
 ---
 
